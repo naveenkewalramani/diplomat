@@ -42,7 +42,12 @@ module Diplomat
     #   - W W - get the first or next value; wait until there is an update
     # rubocop:disable PerceivedComplexity, MethodLength, CyclomaticComplexity, AbcSize, LineLength
     def get(key, options = nil, not_found = :reject, found = :return)
-      @key = key
+      key_subst = if key.start_with? '/'
+                    key[1..-1]
+                  else
+                    key.freeze
+                  end
+      @key = key_subst
       @options = options
 
       url = ["/v1/kv/#{@key}"]
